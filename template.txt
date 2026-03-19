@@ -1,0 +1,43 @@
+"{{ Sermon }}" - Worship for {{ Date }}
+
+Worship for {{ Date }} - "{{ Sermon }}"
+
+https://youtube.com/live/{{ YouTube }}?feature=share
+
+https://youtu.be/{{ YouTube }}
+
+https://youtube.com/live/{{ YouTube }}?feature=share
+
+https://youtube.com/embed/{{ YouTube }}
+
+*********************************************************************
+
+[column width="1/1" last="true" title="Worship for {{ Date }}" title_type="single" implicit="true"]
+
+[iframe src="https://youtube.com/embed/{{ YouTube }}" width="100%" height="600px"]
+
+[/iframe]
+
+[/column]
+
+[column parallax_bg="disabled" parallax_bg_inertia="-0.2" extended="" extended_padding="1" background_color="" background_image="" background_repeat="" background_position="" background_size="auto" background_attachment="" hide_bg_lowres="" background_video="" vertical_padding_top="0" vertical_padding_bottom="0" more_link="" more_text="" left_border="transparent" class="" id="" title="" title_type="single" animation="none" width="1/1" last="true"]
+
+[column_1 width="1/1" last="true" title='{{ Sermon }}' title_type="single" animation="none" implicit="true"]
+
+Join us for worship this morning.
+
+<strong>Sermon</strong>: "<a href="https://youtu.be/{{ YouTube }}">{{ Sermon }}</a>"
+
+Keep up with everything going on at our church by subscribing to our newsletter. <a href="http://eepurl.com/cRUaer">Click here</a>.
+
+Songs are done under CCLI Streaming License.
+
+[/column_1]
+
+[/column]
+
+---
+
+Join us for worship today at 11:00 AM. If you cannot attend worship in person, join us online. https://youtu.be/{{ YouTube }}
+
+{{ YouTube }}
