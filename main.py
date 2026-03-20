@@ -34,6 +34,8 @@ if __name__ == "__main__":
     else:
         title = sys.argv[1]
         yt_slug = sys.argv[2]
+        if len(sys.argv) == 4:
+            date = sys.argv[3]
     
     worship_service = WorshipService(title, yt_slug, date)
     processed_template = process_template(worship_service)
