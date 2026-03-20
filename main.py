@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from worship_service import WorshipService
 
@@ -15,7 +16,9 @@ def process_template(worship_service: WorshipService):
 
 
 def create_output_file(worship_service: WorshipService, content: str):
-    with open(f"output/worship_{worship_service.sort_date}.txt", "w") as file:
+    output_path = Path("output/worship_{worship_service.sort_date}.txt")
+    output_path.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w") as file:
         file.write(content)
 
 
