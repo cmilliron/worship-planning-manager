@@ -16,8 +16,9 @@ def process_template(worship_service: WorshipService):
 
 
 def create_output_file(worship_service: WorshipService, content: str):
-    output_path = Path("output/worship_{worship_service.sort_date}.txt")
-    output_path.mkdir(parents=True, exist_ok=True)
+    base_path = Path("output") / f"Worship - {worship_service.sort_date}" 
+    base_path.mkdir(parents=True, exist_ok=True)
+    output_path = base_path / f"worship_{worship_service.sort_date}.txt"
     with open(output_path, "w") as file:
         file.write(content)
 
