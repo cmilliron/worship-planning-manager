@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
 
 class WorshipService:
-    def __init__(self, title, youtube_slug, date=""):
+    def __init__(self, title, youtube_slug, date="next"):
         self.title = title
         self.youtube_slug = youtube_slug
         self.date_formats(date)
     
     def date_formats(self, date):
-        if date == "":
+        if date == "next":
             today = datetime.now()
             days_until_sunday = (6 - today.weekday())
             if days_until_sunday <= 0:
