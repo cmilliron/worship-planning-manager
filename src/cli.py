@@ -57,11 +57,11 @@ def handle_list_command():
     sorted_sermons = sorted(sermons, key=sort_sermons_key)
 
     print("\n=== Upcoming Services ===")
-    print(f"{'Date':<15} | {'Sermon Title':<25} | {'YouTube Link'}")
-    print("-" * 70)
+    print(f"{'ID':<15} | {'Date':<15} | {'Sermon Title':<25} | {'YouTube Link'}")
+    print("-" * 80)
     
     for s in sorted_sermons:
-        print(f"{s.date:<15} | {s.title:<25} | {s.youtube_url}")
+        print(f"{s.id:<15} | {s.date:<15} | {s.title:<25} | {s.youtube_url}")
 
 def main():
     init_db()
