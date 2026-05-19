@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
-from config import DATABASE_URL
+from config import DATABASE_URL, DATA_PATH
 
 engine = create_engine(DATABASE_URL, echo=False)
 
@@ -17,6 +17,7 @@ class SermonEntry(Base):
 
 def init_db():
     """Creates the database tables if they do not exist."""
+    DATA_PATH.mkdir(parents=True, exist_ok=True)
     Base.metadata.create_all(bind=engine)
 
 def save_to_database(sermon_title, youtube_url, date_value):
