@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 from config import DATABASE_URL, DATA_PATH
+from datetime import datetime
 
 engine = create_engine(DATABASE_URL, echo=False)
 
@@ -49,5 +50,36 @@ def get_all_sermons():
     except Exception as e:
         print(f"An error occurred while fetching data: {e}")
         return []
+    finally:
+        session.close()
+
+def get_next_sermon():
+    """
+    Finds and returns the single closest upcoming sermon.
+    Prioritizes 'next', followed by the closest future date.
+    """
+    session = SessionLocal()
+    try:
+        # Step 1: Check if an explicit 'next' entry exists
+        next_sermon = session.query(SermonEntry).filter(SermonEntry.date.ilike("next")).first()
+        if next_sermon:
+            return next_sermon
+
+        # Step 2: If no 'next', find the closest valid date >= today
+        today_str = datetime.today().strftime("%Y-%m-%d") # e.g., "2026-05-18"
+        
+        closest_future_sermon = (
+            session.query(SermonEntry)
+            .filter(SermonEntry.date >= today_str) # Filter out past dates
+            .filter(SermonEntry.date != "next")    # (Safety check)
+            .order_by(SermonEntry.date.asc())      # Sort closest first
+            .first()                               # Grab just the top one
+        )
+        
+        return closest_future_sermon
+        
+    except Exception as e:
+        print(f"An error occurred while fetching the upcoming sermon: {e}")
+        return None
     finally:
         session.close()

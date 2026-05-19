@@ -4,8 +4,9 @@ from pathlib import Path
 from datetime import datetime
 from .database import init_db, save_to_database, get_all_sermons
 from .worship_service import WorshipService
+from .handlers.create_doc_handler import create_doc_handler
 
-from config import output_location
+from config import OUPUT_LOCATION
 
 def process_template(worship_service: WorshipService): 
     contents = ""
@@ -18,7 +19,7 @@ def process_template(worship_service: WorshipService):
 
 
 def create_output_file(worship_service: WorshipService, content: str):
-    base_path = Path(output_location) / f"Worship - {worship_service.sort_date}" 
+    base_path = Path(OUPUT_LOCATION) / f"Worship - {worship_service.sort_date}" 
     base_path.mkdir(parents=True, exist_ok=True)
     output_path = base_path / f"worship_{worship_service.sort_date}.txt"
     with open(output_path, "w") as file:
@@ -91,6 +92,9 @@ def main():
 
     list_parser = subparsers.add_parser("list", help="List all upcoming services closest to top")
 
+    create_doc_parser = subparsers.add_parser("create_doc", help="Creates a doc in downloads folder")
+    create_doc_parser.add_argument('-d', type=str, default="next", help="The date for the entry (Optional, defaults to 'next')")
+
     args = parser.parse_args()
     
     match args.command:
@@ -107,6 +111,9 @@ def main():
 
         case "list":
             handle_list_command()
+
+        case "create_doc":
+            create_doc_handler()
 
         case _:
             parser.print_help()
