@@ -4,6 +4,8 @@ class WorshipService:
     def __init__(self, title, youtube_slug, date="next"):
         self.title = title
         self.youtube_slug = youtube_slug
+        self.sort_date = ""
+        self.full_date = ""
         self.date_formats(date)
     
     def date_formats(self, date):

@@ -1,8 +1,9 @@
 import sys
 import argparse
 from pathlib import Path
-
-from worship_service import WorshipService
+from datetime import datetime
+from .database import init_db, save_to_database, get_all_sermons
+from .worship_service import WorshipService
 
 from config import output_location
 
@@ -23,8 +24,46 @@ def create_output_file(worship_service: WorshipService, content: str):
     with open(output_path, "w") as file:
         file.write(content)
 
-def main():
+def sort_sermons_key(sermon):
+    """
+    Custom sorting key: 
+    1. 'next' strings go to the very top.
+    2. Valid dates are sorted chronologically.
+    3. Unparseable strings fall to the bottom.
+    """
+    date_str = sermon.date.lower().strip()
+    
+    if date_str == "next":
+        # Return a time so far in the past it always comes first
+        return datetime.min
+    
+    try:
+        # Assuming YYYY-MM-DD format for actual dates
+        return datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        # If the date string format is weird, put it at the end
+        return datetime.max
 
+def handle_list_command():
+    """Fetches, sorts, and prints upcoming sermons."""
+    sermons = get_all_sermons()
+    
+    if not sermons:
+        print("No sermons found in the database.")
+        return
+
+    # Sort the sermons using our custom key
+    sorted_sermons = sorted(sermons, key=sort_sermons_key)
+
+    print("\n=== Upcoming Services ===")
+    print(f"{'Date':<15} | {'Sermon Title':<25} | {'YouTube Link'}")
+    print("-" * 70)
+    
+    for s in sorted_sermons:
+        print(f"{s.date:<15} | {s.title:<25} | {s.youtube_url}")
+
+def main():
+    init_db()
     parser = argparse.ArgumentParser(description="Worship Planning Document")
     
     subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
@@ -50,22 +89,27 @@ def main():
         help="The date for the entry (Optional, defaults to 'next')"
     )
 
-    # 5. Parse the arguments
-    args = parser.parse_args()
+    list_parser = subparsers.add_parser("list", help="List all upcoming services closest to top")
 
-    # Demonstration of how to access the parsed data
-    if args.command == "new":
-        print(f"Command executed: {args.command}")
-        print(f"Sermon:           {args.sermon}")
-        print(f"YouTube:          {args.youtube}")
-        print(f"Date:             {args.date}")
+    args = parser.parse_args()
     
     match args.command:
         case "new":
             worship_service = WorshipService(args.sermon, args.youtube, args.date)
-            processed_template = process_template(worship_service)
-            # print(process_template)
-            create_output_file(worship_service, processed_template)
+            # processed_template = process_template(worship_service)
+            # # print(process_template)
+            # create_output_file(worship_service, processed_template)
+            save_to_database(
+                sermon_title=args.sermon, 
+                youtube_url=args.youtube, 
+                date_value=worship_service.sort_date
+            )
+
+        case "list":
+            handle_list_command()
+
+        case _:
+            parser.print_help()
 
 
 
